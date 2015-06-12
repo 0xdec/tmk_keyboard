@@ -15,14 +15,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <avr/io.h>
-#include "stdint.h"
 #include "led.h"
 #include "backlight.h"
 
-
-void led_set(uint8_t usb_led)
-{
+void led_set(uint8_t usb_led) {
     usb_led & (1<<USB_LED_CAPS_LOCK) ? set_caps_lock(true) : set_caps_lock(false);
     usb_led & (1<<USB_LED_SCROLL_LOCK) ? set_scroll_lock(true) : set_scroll_lock(false);
 }
