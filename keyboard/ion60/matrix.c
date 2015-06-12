@@ -149,18 +149,18 @@ static uint8_t read_rows(void) {
 }
 
 /* Column pin configuration
- * The columns uses two 74HC237D 3 to 8 bit demultiplexers, connected together
+ * The columns uses two 74HC238 3 to 8 bit demultiplexers, connected together
  * to form one 4 to 8 bit demultiplexer.
  *
  * The four address lines are named A0, A1, A2, and A3:
  * Name: A0   A1   A2   A3
  * Pin:  PF4  PF5  PF6  PF7
  *
- * There are also two enable pins that must be set correctly:
- * Name: E0   E1
- * Pin:  PF0  PF1
+ * There is also an enable pin that must be set correctly:
+ * Name: E1
+ * Pin:  PF0
  *
- * To enable both demultiplexers, E0 must be set to 1 (high) and E1 to 0 (low)
+ * To enable both demultiplexers, E1 must be set to 0 (low)
  *
  * Column: 0   1   2   3   4   5   6   7   8   9   10  11  12  13  14
  * A0:     0   1   0   1   0   1   0   1   0   1   0   1   0   1   0
@@ -170,16 +170,19 @@ static uint8_t read_rows(void) {
  */
 static void init_cols(void) {
     // Set pins to output low (DDR:1, PORT:0)
-    DDRF |= 0b11110011;
-    PORTF &= ~0b11110011;
+    DDRF |= 0b11110001;
+    PORTF &= ~0b11110001;
 }
 
 static void deselect_cols(void) {
-    // Set E0 to output low (DDR:1, PORT:0)
-    PORTF &= ~1;
+    // Set E1 to output high (DDR:1, PORT:1)
+    PORTF |= 1;
 }
 
 static void select_col(uint8_t col) {
     // Output high (DDR:1, PORT:1) to select
-    PORTF |= 1 | (col<<4);
+    PORTF |= (col<<4);
+
+    // Set E1 to output low (DDR:1, PORT:0)
+    PORTF &= ~1;
 }
