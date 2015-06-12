@@ -71,7 +71,7 @@ const uint8_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         NO  ,NO  ,NO  ,NO  ,NO  ,NO  ,TRNS,TRNS,TRNS,NO  ,NO  ,NO  ,NO  ,NO  ,NO  ,
         TRNS  ,TRNS   ,TRNS  ,TRNS   ,TRNS  ,TRNS   ,TRNS  ,TRNS   ,TRNS  ,TRNS  ),
 
-    /* 10: Shift lock */
+    /* 10: Sym Lock */
     [10] = KEYMAP(
         FN11,FN11,FN11,FN11,FN11,FN11,TRNS,TRNS,TRNS,FN11,FN11,FN11,FN11,TRNS,TRNS,
         TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,
@@ -94,15 +94,13 @@ const uint16_t PROGMEM fn_actions[] = {
     [8] = ACTION_BACKLIGHT_DECREASE(),
     [9] = ACTION_BACKLIGHT_INCREASE(),
 
-    [10] = ACTION_LAYER_TOGGLE(10), // Shift lock
-    [11] = ACTION_FUNCTION(SHIFT_LOCK),
+    [10] = ACTION_LAYER_TOGGLE(10), // Symbol lock
+    [11] = ACTION_FUNCTION(SYM_LOCK),
 };
 
-/*
- * user defined action function
- */
+// User defined action function
 enum function_id {
-    SHIFT_LOCK,
+    SYM_LOCK,
 };
 
 void action_function(keyrecord_t *record, uint8_t id, uint8_t opt) {
@@ -111,7 +109,7 @@ void action_function(keyrecord_t *record, uint8_t id, uint8_t opt) {
     static uint8_t number_key;
 
     switch (id) {
-        case SHIFT_LOCK:
+        case SYM_LOCK:
             mods_shift = get_mods() & (MOD_BIT(KC_LSFT) | MOD_BIT(KC_RSFT));
             number_key = keymap_key_to_keycode(default_layer, record->event.key);
             if (record->event.pressed) {
@@ -122,12 +120,12 @@ void action_function(keyrecord_t *record, uint8_t id, uint8_t opt) {
                     add_mods(mods_shift); // Add shift
                 } else {
                     add_mods(mods_shift); // Add shift
-                    add_key(number_key); // Add the number
+                    add_key(number_key); // Add the symbol
                     send_keyboard_report(); // Send a keydown report
                     del_mods(mods_shift); // Remove shift
                 }
             } else {
-                del_key(number_key); // Remove the number on keyup
+                del_key(number_key); // Remove the number/symbol
                 send_keyboard_report(); // Send a keyup report
             }
             break;
