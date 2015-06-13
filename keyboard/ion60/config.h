@@ -31,7 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MATRIX_ROWS 5
 #define MATRIX_COLS 15
 
-/* number of backlight levels */
+/* Number of backlight levels */
 #define BACKLIGHT_LEVELS 16
 
 /* Define if matrix has ghost */
