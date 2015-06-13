@@ -60,6 +60,18 @@ void matrix_init(void) {
     for (uint8_t i = 0; i < MATRIX_ROWS; i++) {
         matrix[i] = 0;
         matrix_debouncing[i] = 0;
+
+        // Find the caps and sym lock keys
+        // TODO: update when the default layer is changed, and add scroll lock
+        for (uint8_t ii = 0; ii < MATRIX_COLS; ii++) {
+            if (keymaps[default_layer][i][ii] == KC_CAPS) {
+                caps_key->key.row = i;
+                caps_key->key.col = ii;
+            } else if (keymaps[default_layer][i][ii] == KC_FN10) {
+                sym_key->key.row = i;
+                sym_key->key.col = ii;
+            }
+        }
     }
 }
 
@@ -85,6 +97,11 @@ uint8_t matrix_scan(void) {
         }
 
         deselect_cols();
+
+        // Update the backlight every 3 columns
+        if (!(col % 3)) {
+            backlight_send_row(col / 3);
+        }
     }
 
     if (debouncing) {
