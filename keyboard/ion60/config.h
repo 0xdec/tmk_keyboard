@@ -20,12 +20,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 /* USB Device descriptor parameters */
-#define VENDOR_ID       0xFEED
-#define PRODUCT_ID      0xBEEF
-#define DEVICE_VER      0x0001
-#define MANUFACTURER    D1SC0tech
-#define PRODUCT         ION-60
-#define DESCRIPTION     tmk keyboard firmware for ION-60
+// TODO: look into getting an Openmoko VID/PID
+// http://wiki.openmoko.org/wiki/USB_Product_IDs
+#define VENDOR_ID       0xFEED    // Openmoko: 0x1D50
+#define PRODUCT_ID      0x1060    // 10 is for ION, 60 is for 60
+#define DEVICE_VER      0x0100    // BCD notation for v1.0.0
+#define MANUFACTURER    D1SC0tech // Dat me!
+#define PRODUCT         ION-60    // ION-KB 60% keyboard
+#define DESCRIPTION     0x000     // This is the serial number, not the description
 
 /* Key matrix size */
 #define MATRIX_ROWS 5
@@ -38,7 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#define MATRIX_HAS_GHOST
 
 /* Set 0 if debouncing isn't needed */
-#define DEBOUNCE    5
+#define DEBOUNCE 5 // TODO: hardware debouncing
 
 /* Key combination for command */
 #define IS_COMMAND() ( \
@@ -51,10 +53,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 /* disable debug print */
-//#define NO_DEBUG
+//#define NO_DEBUG // TODO: uncomment for production
 
 /* disable print */
-//#define NO_PRINT
+//#define NO_PRINT // TODO: uncomment for production
 
 /* disable action features */
 //#define NO_ACTION_LAYER
