@@ -23,6 +23,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "debug.h"
 #include "util.h"
 #include "matrix.h"
+#include "keymap_common.h"
+#include "keycode.h"
+#include "lighting.h"
 
 
 #ifndef DEBOUNCE
@@ -39,6 +42,8 @@ static uint8_t read_rows(void);
 static void init_cols(void);
 static void deselect_cols(void);
 static void select_col(uint8_t col);
+
+//extern keyevent_t caps_key, sym_key;
 
 
 inline
@@ -64,12 +69,19 @@ void matrix_init(void) {
         // Find the caps and sym lock keys
         // TODO: update when the default layer is changed, and add scroll lock
         for (uint8_t ii = 0; ii < MATRIX_COLS; ii++) {
+            // TODO: test default_layer
+            uint8_t default_layer = 0;
+            uint32_t i = default_layer_state;
+            while (i > 1) {
+              i = i>>1;
+              default_layer++;
+            }
             if (keymaps[default_layer][i][ii] == KC_CAPS) {
-                caps_key->key.row = i;
-                caps_key->key.col = ii;
+                caps_key.key.row = i;
+                caps_key.key.col = ii;
             } else if (keymaps[default_layer][i][ii] == KC_FN10) {
-                sym_key->key.row = i;
-                sym_key->key.col = ii;
+                sym_key.key.row = i;
+                sym_key.key.col = ii;
             }
         }
     }
@@ -100,7 +112,7 @@ uint8_t matrix_scan(void) {
 
         // Update the backlight every 3 columns
         if (!(col % 3)) {
-            backlight_send_row(col / 3);
+            backlight_send_row(col / 3, matrix);
         }
     }
 

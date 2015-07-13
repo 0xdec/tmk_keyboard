@@ -15,8 +15,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+//#include <stdbool.h>
 #include "led.h"
-#include "backlight.h"
+#include "lighting.h"
 
 void led_set(uint8_t usb_led) {
     usb_led & (1<<USB_LED_CAPS_LOCK) ? backlight_caps_lock(true) : backlight_caps_lock(false);

@@ -79,24 +79,6 @@ const uint8_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,
         TRNS  ,TRNS   ,TRNS  ,TRNS   ,TRNS  ,TRNS   ,TRNS  ,TRNS   ,TRNS  ,TRNS  ),
 };
-const uint16_t PROGMEM fn_actions[] = {
-    [0] = ACTION_DEFAULT_LAYER_SET(0), // Set colemak as default layout
-    [1] = ACTION_LAYER_MOMENTARY(1), // To function layer
-
-    [2] = ACTION_DEFAULT_LAYER_SET(2), // Set dvorak as default layout
-    [3] = ACTION_LAYER_MOMENTARY(3), // To function layer
-
-    [4] = ACTION_DEFAULT_LAYER_SET(4), // Set qwerty as default layout
-    [5] = ACTION_LAYER_MOMENTARY(5), // To function layer
-
-    [6] = ACTION_LAYER_MOMENTARY(6), // To media layer
-    [7] = ACTION_BACKLIGHT_TOGGLE(),
-    [8] = ACTION_BACKLIGHT_DECREASE(),
-    [9] = ACTION_BACKLIGHT_INCREASE(),
-
-    [10] = ACTION_LAYER_TOGGLE(7), // Symbol lock
-    [11] = ACTION_FUNCTION(SYM_LOCK),
-};
 
 // User defined action function
 enum function_id {
@@ -107,6 +89,14 @@ void action_function(keyrecord_t *record, uint8_t id, uint8_t opt) {
     // TODO: move these inside the case?
     static uint8_t mods_shift;
     static uint8_t number_key;
+
+    // TODO: test default_layer
+    uint8_t default_layer = 0;
+    uint32_t i = default_layer_state;
+    while (i > 1) {
+      i = i>>1;
+      default_layer++;
+    }
 
     switch (id) {
         case SYM_LOCK:
@@ -131,3 +121,22 @@ void action_function(keyrecord_t *record, uint8_t id, uint8_t opt) {
             break;
     }
 }
+
+const uint16_t PROGMEM fn_actions[] = {
+    [0] = ACTION_DEFAULT_LAYER_SET(0), // Set colemak as default layout
+    [1] = ACTION_LAYER_MOMENTARY(1), // To function layer
+
+    [2] = ACTION_DEFAULT_LAYER_SET(2), // Set dvorak as default layout
+    [3] = ACTION_LAYER_MOMENTARY(3), // To function layer
+
+    [4] = ACTION_DEFAULT_LAYER_SET(4), // Set qwerty as default layout
+    [5] = ACTION_LAYER_MOMENTARY(5), // To function layer
+
+    [6] = ACTION_LAYER_MOMENTARY(6), // To media layer
+    [7] = ACTION_BACKLIGHT_TOGGLE(),
+    [8] = ACTION_BACKLIGHT_DECREASE(),
+    [9] = ACTION_BACKLIGHT_INCREASE(),
+
+    [10] = ACTION_LAYER_TOGGLE(7), // Symbol lock
+    [11] = ACTION_FUNCTION(SYM_LOCK),
+};
