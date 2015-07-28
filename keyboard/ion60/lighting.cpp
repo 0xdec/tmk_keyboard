@@ -65,26 +65,26 @@ void backlight_send_group(uint8_t group) {
         // one channel.
         switch (mode) {
             case 0: // Solid color
-                TLC.set(i, led_values[row][i].value * brightness);
+                TLC.set(i, led_values[group][i].value * brightness);
                 break;
             case 1: // Reactive
-                if (led_values[row][i].frame < 64) {
+                if (led_values[group][i].frame < 64) {
                     uint8_t multiplier = pgm_read_byte_near(animation_table +
-                        ((mode - 1) * 64) + led_values[row][i].frame);
-                    led_values[row][i].frame++;
+                        ((mode - 1) * 64) + led_values[group][i].frame);
+                    led_values[group][i].frame++;
 
-                    TLC.set(i, led_values[row][i].value * brightness *
+                    TLC.set(i, led_values[group][i].value * brightness *
                         multiplier / 255);
-                } else if (led_values[row][i].frame == 64) {
-                    led_values[row][i].frame = 255;
+                } else if (led_values[group][i].frame == 64) {
+                    led_values[group][i].frame = 255;
 
                     TLC.set((i * 3) + 1, 0);
                     TLC.set(i * 3, 0);
                     TLC.set((i * 3) + 2, 0);
                 } else {
                     // TODO: fix this for matrix_row_t
-                    if (matrix[row] & (1<<i)) {
-                        led_values[row][i].frame = 0;
+                    if (matrix[group] & (1<<i)) {
+                        led_values[group][i].frame = 0;
                     }
                 }
                 break;
