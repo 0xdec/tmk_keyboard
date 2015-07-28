@@ -43,11 +43,14 @@
 # Target file name (without extension).
 TARGET = ion60
 
-# Directory common source filess exist
-TMK_DIR = ../../tmk_core
+# Directory for common source files
+TMK_DIR = ../../../tmk_core
 
-# Directory keyboard dependent files exist
+# Directory for keyboard dependent files
 TARGET_DIR = .
+
+# Directory for library files
+LIB_DIR = ../lib
 
 # project specific files
 SRC =  keymap_common.c \
@@ -55,9 +58,9 @@ SRC =  keymap_common.c \
   led.c \
   backlight.c \
   lighting.cpp \
-  TLC5947/TLC5947.cpp \
-  TLC5947/arduino/new.cpp \
-  TLC5947/arduino/abi.cpp
+  ../lib/TLC5947/TLC5947.cpp \
+  ../lib/TLC5947/arduino/new.cpp \
+  ../lib/TLC5947/arduino/abi.cpp
 
 ifdef KEYMAP
   SRC := keymap_$(KEYMAP).c $(SRC)
@@ -137,6 +140,7 @@ BACKLIGHT_ENABLE = yes  # Enable keyboard backlight functionality
 
 # Search Path
 VPATH += $(TARGET_DIR)
+VPATH += $(LIB_DIR)
 VPATH += $(TMK_DIR)
 
 include $(TMK_DIR)/protocol/lufa.mk  # TODO - check this
