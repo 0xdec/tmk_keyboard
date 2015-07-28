@@ -1,7 +1,9 @@
 #----------------------------------------------------------------------------
 # On command line:
 #
-# make all = Make software.
+# make = Make software.
+#
+# make all = Recompile software.
 #
 # make clean = Clean out built project files.
 #
