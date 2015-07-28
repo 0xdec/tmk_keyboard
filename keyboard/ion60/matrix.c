@@ -110,9 +110,9 @@ uint8_t matrix_scan(void) {
 
         deselect_cols();
 
-        // Update the backlight every 3 columns
-        if (!(col % 3)) {
-            backlight_send_row(col / 3, matrix);
+        // Update the backlight every 5 columns
+        if (!(col % 5)) {
+            backlight_send_group(col / 5);
         }
     }
 

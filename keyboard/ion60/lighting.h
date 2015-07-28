@@ -32,16 +32,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define NUM_MODES 1
 
 typedef struct {
-    uint8_t red;
-    uint8_t green;
-    uint8_t blue;
-
+    uint8_t value;
     uint8_t frame;
-} rgbled_t;
+} led_t;
+
+extern matrix_row_t matrix[];
 
 keyevent_t caps_key, sym_key;
 
-EXTERNC void backlight_send_row(uint8_t row, matrix_row_t matrix[]);
+EXTERNC void backlight_send_group(uint8_t group);
 
 uint8_t backlight_mode_get(void);
 void backlight_mode_set(uint8_t mode_new);
