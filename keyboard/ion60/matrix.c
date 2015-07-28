@@ -34,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 static uint8_t debouncing = DEBOUNCE;
 
 // Matrix state (0:off, 1:on)
-static matrix_row_t matrix[MATRIX_ROWS];
+matrix_row_t matrix[MATRIX_ROWS];
 static matrix_row_t matrix_debouncing[MATRIX_ROWS];
 
 static void init_rows(void);
