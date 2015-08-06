@@ -59,8 +59,8 @@ SRC =  keymap_common.c \
   backlight.c \
   lighting.cpp \
   ../lib/TLC5947/TLC5947.cpp \
-  ../lib/TLC5947/arduino/new.cpp \
-  ../lib/TLC5947/arduino/abi.cpp
+  ../lib/TLC5947/new.cpp \
+  ../lib/TLC5947/abi.cpp
 
 ifdef KEYMAP
   SRC := keymap_$(KEYMAP).c $(SRC)
