@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define DEVICE_VER      0x0100    // BCD notation for v1.0.0
 #define MANUFACTURER    D1SC0tech // Dat me!
 #define PRODUCT         ION-60    // ION-KB 60% keyboard
-#define DESCRIPTION     0x000     // This is the serial number, not the description
+#define DESCRIPTION     0x000     // This is actually the serial number
 
 /* Key matrix size */
 #define MATRIX_ROWS 5

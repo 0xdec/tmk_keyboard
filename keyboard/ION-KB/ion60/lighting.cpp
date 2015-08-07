@@ -82,7 +82,7 @@ void backlight_send_group(uint8_t group) {
                     TLC.set(i * 3, 0);
                     TLC.set((i * 3) + 2, 0);
                 } else {
-                    // TODO: fix this for matrix_row_t
+                    // TODO: fix this for matrix_row_t and groups
                     if (matrix[group] & (1<<i)) {
                         led_values[group][i].frame = 0;
                     }
