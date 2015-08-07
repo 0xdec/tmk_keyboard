@@ -19,6 +19,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define CONFIG_H
 
 
+/* Boot section size in bytes */
+#define BOOTLOADER_SIZE 512 // TODO: should be 4096
+
 /* USB Device descriptor parameters */
 // TODO: look into getting an Openmoko VID/PID
 // http://wiki.openmoko.org/wiki/USB_Product_IDs
