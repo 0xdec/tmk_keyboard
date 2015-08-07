@@ -16,14 +16,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "keymap_common.h"
+//#include "bootloader.h"
 
 
 /* translates key to keycode */
 uint8_t keymap_key_to_keycode(uint8_t layer, keypos_t key) {
+    /*uint8_t keycode = pgm_read_byte(&keymaps[(layer)][(key.row)][(key.col)]);
+
+    if (keycode == KC_RST) {
+        bootloader_jump();
+    }*/
+
     return pgm_read_byte(&keymaps[(layer)][(key.row)][(key.col)]);
 }
 
 /* translates Fn keycode to action */
 action_t keymap_fn_to_action(uint8_t keycode) {
+    /*if (keycode == KC_SYM) {
+        return (action_t){ .code = ACTION_LAYER_TOGGLE(7) };
+    }*/
+
     return (action_t){ .code = pgm_read_word(&fn_actions[FN_INDEX(keycode)]) };
 }

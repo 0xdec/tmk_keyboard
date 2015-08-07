@@ -38,6 +38,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 extern const uint8_t keymaps[][MATRIX_ROWS][MATRIX_COLS];
 extern const uint16_t fn_actions[];
 
+//#define KC_SYM
+//#define KC_RST 0x5000
+
 
 /* ION-60 keymap definition macro
  * Layout
