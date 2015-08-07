@@ -43,8 +43,6 @@ static void init_cols(void);
 static void deselect_cols(void);
 static void select_col(uint8_t col);
 
-//extern keyevent_t caps_key, sym_key;
-
 
 inline
 uint8_t matrix_rows(void) {
@@ -90,21 +88,30 @@ void matrix_init(void) {
 uint8_t matrix_scan(void) {
     for (uint8_t col = 0; col < MATRIX_COLS; col++) {
         select_col(col);
-        _delay_us(3);
+        //_delay_us(3);
+        _delay_ms(5);
         uint8_t rows = read_rows();
 
         for (uint8_t row = 0; row < MATRIX_ROWS; row++) {
-            bool prev_bit = matrix_debouncing[row] & ((matrix_row_t)1<<col);
-            bool curr_bit = rows & (1<<row);
+            if (DEBOUNCE) {
+                bool prev_bit = matrix_debouncing[row] & ((matrix_row_t)_BV(col));
+                bool curr_bit = rows & _BV(row);
 
-            if (prev_bit != curr_bit) {
-                matrix_debouncing[row] ^= ((matrix_row_t)1<<col);
-                if (debouncing) {
-                    dprint("bounce!: ");
-                    dprintf("%02X", debouncing);
-                    dprintln();
+                if (prev_bit != curr_bit) {
+                    matrix_debouncing[row] ^= ((matrix_row_t)_BV(col));
+                    if (debouncing) {
+                        dprint("bounce!: ");
+                        dprintf("%02X", debouncing);
+                        dprintln();
+                    }
+                    debouncing = DEBOUNCE;
                 }
-                debouncing = DEBOUNCE;
+            } else {
+                if (rows & _BV(row)) {
+                    matrix[row] |= (matrix_row_t)_BV(col);
+                } else {
+                    matrix[row] &= ~((matrix_row_t)_BV(col));
+                }
             }
         }
 
@@ -115,6 +122,8 @@ uint8_t matrix_scan(void) {
             backlight_send_group(col / 5);
         }
     }
+
+    matrix_print();
 
     if (debouncing) {
         if (--debouncing) {
@@ -136,7 +145,7 @@ bool matrix_is_modified(void) {
 
 inline
 bool matrix_is_on(uint8_t row, uint8_t col) {
-    return (matrix[row] & ((matrix_row_t)1<<col));
+    return (matrix[row] & ((matrix_row_t)_BV(col)));
 }
 
 inline
@@ -164,17 +173,17 @@ uint8_t matrix_key_count(void) {
 
 /* Row pin configuration
  * Row: 0    1    2    3    4
- * Pin: PD0  PD1  PD2  PD3  PD5
+ * Pin: PF0  PF4  PF5  PF6  PF7
  */
 static void init_rows(void) {
     // Set pins to input (DDR:0, PORT:0)
-    DDRD  &= ~0b00101111;
-    PORTD &= ~0b00101111;
+    DDRF  &= ~0b11110001;
+    PORTF &= ~0b11110001;
 }
 
 static uint8_t read_rows(void) {
-    return  (PIND & 0b00001111) |
-            (PIND & (1<<5) ? (1<<4) : 0);
+    uint8_t rows = (PINF>>3 & 0b00011110) | (PINF & 1);
+    return rows;
 }
 
 /* Column pin configuration
@@ -183,11 +192,11 @@ static uint8_t read_rows(void) {
  *
  * The four address lines are named A0, A1, A2, and A3:
  * Name: A0   A1   A2   A3
- * Pin:  PF4  PF5  PF6  PF7
+ * Pin:  PB4  PB5  PB6  PB7
  *
  * There is also an enable pin that must be set correctly:
- * Name: E1
- * Pin:  PF0
+ * Name: !E1
+ * Pin:  PD7
  *
  * To enable both demultiplexers, E1 must be set to 0 (low)
  *
@@ -199,19 +208,25 @@ static uint8_t read_rows(void) {
  */
 static void init_cols(void) {
     // Set pins to output low (DDR:1, PORT:0)
-    DDRF |= 0b11110001;
-    PORTF &= ~0b11110001;
+    DDRB |= 0b11110000;
+    PORTB &= ~0b11110000;
+
+    DDRD |= _BV(7);
+    PORTD &= ~(_BV(7));
 }
 
 static void deselect_cols(void) {
+    // Set pins to output low (DDR:1, PORT:0)
+    PORTB &= ~0b11110000;
+
     // Set E1 to output high (DDR:1, PORT:1)
-    PORTF |= 1;
+    PORTD |= _BV(7);
 }
 
 static void select_col(uint8_t col) {
     // Output high (DDR:1, PORT:1) to select
-    PORTF |= (col<<4);
+    PORTB |= (col<<4);
 
     // Set E1 to output low (DDR:1, PORT:0)
-    PORTF &= ~1;
+    PORTD &= ~(_BV(7));
 }
