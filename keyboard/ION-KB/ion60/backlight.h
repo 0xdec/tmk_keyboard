@@ -18,9 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef BACKLIGHT_H
 #define BACKLIGHT_H
 
-enum backlight_level {
-    BACKLIGHT_NUMPAD = 0b0010000,
-    BACKLIGHT_REAR   = 0b0100000,
-};
+enum backlight_level;
 
 #endif // BACKLIGHT_H
