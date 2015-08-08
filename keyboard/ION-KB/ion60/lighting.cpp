@@ -69,7 +69,7 @@ void backlight_send_group(uint8_t group) {
                 break;
             case 1: // Reactive
                 if (led_values[group][i].frame < 64) {
-                    uint8_t multiplier = pgm_read_byte_near(animation_table +
+                    uint8_t multiplier = pgm_read_byte(animation_table +
                         ((mode - 1) * 64) + led_values[group][i].frame);
                     led_values[group][i].frame++;
 
