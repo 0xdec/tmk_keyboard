@@ -28,8 +28,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "lighting.h"
 
 
-#ifndef DEBOUNCE
+#ifdef SOFT_DEBOUNCE
 #   define DEBOUNCE	5
+#else
+#   define DEBOUNCE 0
 #endif
 static uint8_t debouncing = DEBOUNCE;
 
@@ -59,6 +61,14 @@ void matrix_init(void) {
     init_rows();
     init_cols();
 
+    // TODO: test default_layer
+    uint8_t default_layer = 0;
+    uint32_t i = default_layer_state;
+    while (i > 1) {
+      i = i>>1;
+      default_layer++;
+    }
+
     // Initialize matrix state: all keys off
     for (uint8_t i = 0; i < MATRIX_ROWS; i++) {
         matrix[i] = 0;
@@ -67,17 +77,11 @@ void matrix_init(void) {
         // Find the caps and sym lock keys
         // TODO: update when the default layer is changed, and add scroll lock
         for (uint8_t ii = 0; ii < MATRIX_COLS; ii++) {
-            // TODO: test default_layer
-            uint8_t default_layer = 0;
-            uint32_t i = default_layer_state;
-            while (i > 1) {
-              i = i>>1;
-              default_layer++;
-            }
-            if (keymaps[default_layer][i][ii] == KC_CAPS) {
+            uint8_t key = pgm_read_byte(&keymaps[default_layer][i][ii]);
+            if (key == KC_CAPS) {
                 caps_key.key.row = i;
                 caps_key.key.col = ii;
-            } else if (keymaps[default_layer][i][ii] == KC_FN10) {
+            } else if (key == KC_FN10) {
                 sym_key.key.row = i;
                 sym_key.key.col = ii;
             }
@@ -88,31 +92,34 @@ void matrix_init(void) {
 uint8_t matrix_scan(void) {
     for (uint8_t col = 0; col < MATRIX_COLS; col++) {
         select_col(col);
-        //_delay_us(3);
+        #ifdef SOFT_DEBOUNCE
+        _delay_us(3);
+        #else
         _delay_ms(5);
+        #endif
         uint8_t rows = read_rows();
 
         for (uint8_t row = 0; row < MATRIX_ROWS; row++) {
-            if (DEBOUNCE) {
-                bool prev_bit = matrix_debouncing[row] & ((matrix_row_t)_BV(col));
-                bool curr_bit = rows & _BV(row);
+            #ifdef SOFT_DEBOUNCE
+            bool prev_bit = matrix_debouncing[row] & ((matrix_row_t)_BV(col));
+            bool curr_bit = rows & _BV(row);
 
-                if (prev_bit != curr_bit) {
-                    matrix_debouncing[row] ^= ((matrix_row_t)_BV(col));
-                    if (debouncing) {
-                        dprint("bounce!: ");
-                        dprintf("%02X", debouncing);
-                        dprintln();
-                    }
-                    debouncing = DEBOUNCE;
+            if (prev_bit != curr_bit) {
+                matrix_debouncing[row] ^= ((matrix_row_t)_BV(col));
+                if (debouncing) {
+                    dprint("bounce!: ");
+                    dprintf("%02X", debouncing);
+                    dprintln();
                 }
-            } else {
-                if (rows & _BV(row)) {
-                    matrix[row] |= (matrix_row_t)_BV(col);
-                } else {
-                    matrix[row] &= ~((matrix_row_t)_BV(col));
-                }
+                debouncing = DEBOUNCE;
             }
+            #else
+            if (rows & _BV(row)) {
+                matrix[row] |= (matrix_row_t)_BV(col);
+            } else {
+                matrix[row] &= ~((matrix_row_t)_BV(col));
+            }
+            #endif
         }
 
         deselect_cols();

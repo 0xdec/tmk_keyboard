@@ -42,8 +42,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /* Define if matrix has ghost */
 //#define MATRIX_HAS_GHOST
 
-/* Set 0 if debouncing isn't needed */
-#define DEBOUNCE 0
+/* Comment out when using hardware debouncing */
+#define SOFT_DEBOUNCE
 
 /* Key combination for command */
 #define IS_COMMAND() ( \
