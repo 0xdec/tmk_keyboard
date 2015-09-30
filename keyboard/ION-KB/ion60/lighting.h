@@ -29,7 +29,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "keyboard.h" // For keyevent_t
 #include "matrix.h" // For matrix_row_t
 
-#define NUM_MODES 1
+#define NUM_MODES   1
+#define NUM_GROUPS  3
 
 typedef struct {
     uint8_t value;

@@ -36,7 +36,27 @@ static const uint8_t animation_table[NUM_MODES][64] PROGMEM = {
         16,15,13,12,11,10,9,8,7,6,4,3,2,1,0,0
     }
 };
-// Create an array to store the LED colors
+/*static const uint8_t led_map[MATRIX_ROWS][MATRIX_COLS] PROGMEM = {
+    {3, 7, 11, 15, 19, 23, 39, 43, 47, 71, 67, 63, 59, 55, 51},
+    {2, 6, 10, 14, 18, 22, 38, 42, 46, 70, 66, 62, 58, 54, 50},
+    {1, 5, 9, 13, 17, 21, 37, 41, 45, 69, 65, 61, 57, 53, 49},
+    {0, 4, 8, 12, 16, 20, 36, 40, 44, 68, 64, 60, 56, 52, 48},
+    {25, 24, 26, 27, 24, 28, 29, 255, 30, 31, 35, 32, 33, 35, 34}
+};*/
+// Array to map the LED groups to the value array
+// TODO: check LEDs 61 & 73 (64 & 70 are being ignored)
+static const uint8_t group_map[NUM_GROUPS][24] PROGMEM = {
+    {45,30,15,0 ,46,31,16,1 ,47,32,17,2 ,48,33,18,3 ,49,34,19,4 ,50,35,20,5},
+    {61,60,62,63,65,66,68,69,71,72,74,73,51,36,21,6 ,52,37,22,7 ,53,38,23,8},
+    {59,44,29,14,58,43,28,13,57,42,27,12,56,41,26,11,55,40,25,10,54,39,24,9}
+};
+// Array for the group anode pins
+static const pin group_pins[NUM_GROUPS] = {
+    PB5,
+    PB6,
+    PB7
+}
+// Array to store the LED values
 static led_t led_values[MATRIX_ROWS][MATRIX_COLS];
 
 // Global keyboard brightness, goes from 0(off) to 16(full on)
@@ -61,30 +81,32 @@ void backlight_send_group(uint8_t group) {
     // TODO: needs code for LED anodes (rows)
 
     for (uint8_t i = 0; i < 24; i++) {
-        // TODO: change to match the fact that the second chip is shifted by
-        // one channel.
+        uint8_t led_row = pgm_read_byte(&group_map[group][i]);
+        uint8_t led_col = led_row % 24;
+        led_row = (led_row - led_col) / 24;
+
         switch (mode) {
             case 0: // Solid color
-                TLC.set(i, led_values[group][i].value * brightness);
+                TLC.set(i, led_values[led_row][led_col].value * brightness);
                 break;
             case 1: // Reactive
-                if (led_values[group][i].frame < 64) {
+                if (led_values[led_row][led_col].frame < 64) {
                     uint8_t multiplier = pgm_read_byte(animation_table +
-                        ((mode - 1) * 64) + led_values[group][i].frame);
-                    led_values[group][i].frame++;
+                        ((mode - 1) * 64) + led_values[led_row][led_col].frame);
+                    led_values[led_row][led_col].frame++;
 
-                    TLC.set(i, led_values[group][i].value * brightness *
+                    TLC.set(i, led_values[led_row][led_col].value * brightness *
                         multiplier / 255);
-                } else if (led_values[group][i].frame == 64) {
-                    led_values[group][i].frame = 255;
+                } else if (led_values[led_row][led_col].frame == 64) {
+                    led_values[led_row][led_col].frame = 255;
 
                     TLC.set((i * 3) + 1, 0);
                     TLC.set(i * 3, 0);
                     TLC.set((i * 3) + 2, 0);
                 } else {
                     // TODO: fix this for matrix_row_t and groups
-                    if (matrix[group] & (1<<i)) {
-                        led_values[group][i].frame = 0;
+                    if (matrix[led_row] & (1<<i)) {
+                        led_values[led_row][led_col].frame = 0;
                     }
                 }
                 break;
