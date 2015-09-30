@@ -20,10 +20,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 const uint8_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /* 0: Colemak */
     [0] = KEYMAP(
-        1   ,2   ,3   ,4   ,5   ,6   ,LGUI,ESC ,RGUI,7   ,8   ,9   ,0   ,MINS,EQL ,
-        GRV ,Q   ,W   ,F   ,P   ,G   ,CAPS,UP  ,FN10,J   ,L   ,U   ,Y   ,LBRC,RBRC,
-        TAB ,A   ,R   ,S   ,T   ,D   ,LEFT,DOWN,RGHT,H   ,N   ,E   ,I   ,O   ,QUOT,
-        BSLS,Z   ,X   ,C   ,V   ,B   ,FN1 ,FN6 ,FN1 ,K   ,M   ,COMM,DOT ,SLSH,SCLN,
+        GRV ,1   ,2   ,3   ,4   ,5   ,LGUI,ESC ,RGUI,6   ,7   ,8   ,9   ,0   ,BSLS,
+        EQL ,Q   ,W   ,F   ,P   ,G   ,CAPS,UP  ,FN10,J   ,L   ,U   ,Y   ,LBRC,RBRC,
+        MINS,A   ,R   ,S   ,T   ,D   ,LEFT,DOWN,RGHT,H   ,N   ,E   ,I   ,O   ,QUOT,
+        TAB ,Z   ,X   ,C   ,V   ,B   ,FN1 ,FN6 ,FN1 ,K   ,M   ,COMM,DOT ,SLSH,SCLN,
         LALT  ,LCTL   ,LSFT  ,BSPC   ,DEL   ,ENT    ,SPC   ,RSFT   ,RCTL  ,RALT  ),
     /* 1: Function */
     [1] = KEYMAP(
@@ -35,10 +35,10 @@ const uint8_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     /* 2: Dvorak */
     [2] = KEYMAP(
-        1   ,2   ,3   ,4   ,5   ,6   ,LGUI,ESC ,RGUI,7   ,8   ,9   ,0   ,LBRC,RBRC,
-        GRV ,QUOT,COMM,DOT ,P   ,Y   ,CAPS,UP  ,FN10,F   ,G   ,C   ,R   ,L   ,SLSH,
-        TAB ,A   ,O   ,E   ,U   ,I   ,LEFT,DOWN,RGHT,D   ,H   ,T   ,N   ,S   ,MINS,
-        BSLS,SCLN,Q   ,J   ,K   ,X   ,FN3 ,FN6 ,FN3 ,B   ,M   ,W   ,V   ,Z   ,EQL ,
+        GRV ,1   ,2   ,3   ,4   ,5   ,LGUI,ESC ,RGUI,6   ,7   ,8   ,9   ,0   ,RBRC,
+        EQL ,QUOT,COMM,DOT ,P   ,Y   ,CAPS,UP  ,FN10,F   ,G   ,C   ,R   ,L   ,LBRC,
+        MINS,A   ,O   ,E   ,U   ,I   ,LEFT,DOWN,RGHT,D   ,H   ,T   ,N   ,S   ,SLSH,
+        TAB ,SCLN,Q   ,J   ,K   ,X   ,FN3 ,FN6 ,FN3 ,B   ,M   ,W   ,V   ,Z   ,BSLS,
         LALT  ,LCTL   ,LSFT  ,BSPC   ,DEL   ,ENT    ,SPC   ,RSFT   ,RCTL  ,RALT  ),
     /* 3: Function */
     [3] = KEYMAP(
@@ -50,10 +50,10 @@ const uint8_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     /* 4: QWERTY */
     [4] = KEYMAP(
-        1   ,2   ,3   ,4   ,5   ,6   ,LGUI,ESC ,RGUI,7   ,8   ,9   ,0   ,MINS,EQL ,
-        GRV ,Q   ,W   ,E   ,R   ,T   ,CAPS,UP  ,FN10,Y   ,U   ,I   ,O   ,P   ,SLSH,
-        TAB ,A   ,S   ,D   ,F   ,G   ,LEFT,DOWN,RGHT,H   ,J   ,K   ,L   ,SCLN,QUOT,
-        BSLS,Z   ,X   ,C   ,V   ,B   ,FN5 ,FN6 ,FN5 ,N   ,M   ,COMM,DOT ,LBRC,RBRC,
+        GRV ,1   ,2   ,3   ,4   ,5   ,LGUI,ESC ,RGUI,6   ,7   ,8   ,9   ,0   ,RBRC,
+        EQL ,Q   ,W   ,E   ,R   ,T   ,CAPS,UP  ,FN10,Y   ,U   ,I   ,O   ,P   ,LBRC,
+        MINS,A   ,S   ,D   ,F   ,G   ,LEFT,DOWN,RGHT,H   ,J   ,K   ,L   ,SCLN,QUOT,
+        TAB ,Z   ,X   ,C   ,V   ,B   ,FN5 ,FN6 ,FN5 ,N   ,M   ,COMM,DOT ,SLSH,BSLS,
         LALT  ,LCTL   ,LSFT  ,BSPC   ,DEL   ,ENT    ,SPC   ,RSFT   ,RCTL  ,RALT  ),
     /* 5: Function */
     [5] = KEYMAP(
@@ -69,11 +69,11 @@ const uint8_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         NO  ,NO  ,NO  ,NO  ,NO  ,NO  ,TRNS,WREF,TRNS,NO  ,NO  ,NO  ,NO  ,NO  ,NO  ,
         NO  ,NO  ,NO  ,NO  ,NO  ,NO  ,WBAK,WSTP,WFWD,NO  ,NO  ,NO  ,NO  ,NO  ,NO  ,
         NO  ,NO  ,NO  ,NO  ,NO  ,NO  ,TRNS,TRNS,TRNS,NO  ,NO  ,NO  ,NO  ,NO  ,NO  ,
-        TRNS  ,TRNS   ,TRNS  ,TRNS   ,TRNS  ,TRNS   ,TRNS  ,TRNS   ,TRNS  ,TRNS  ),
+        TRNS  ,TRNS   ,TRNS  ,TRNS   ,TRNS  ,TRNS   ,BTLD  ,TRNS   ,TRNS  ,TRNS  ),
 
     /* 7: Sym Lock */
     [7] = KEYMAP(
-        FN11,FN11,FN11,FN11,FN11,FN11,TRNS,TRNS,TRNS,FN11,FN11,FN11,FN11,TRNS,TRNS,
+        TRNS,FN11,FN11,FN11,FN11,FN11,TRNS,TRNS,TRNS,FN11,FN11,FN11,FN11,FN11,TRNS,
         TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,
         TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,
         TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,
