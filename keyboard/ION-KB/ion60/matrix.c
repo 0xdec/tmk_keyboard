@@ -25,7 +25,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "matrix.h"
 #include "keymap_common.h"
 #include "keycode.h"
+
+#ifndef NO_BACKLIGHT
 #include "lighting.h"
+#endif
 
 
 #ifdef SOFT_DEBOUNCE
@@ -124,10 +127,12 @@ uint8_t matrix_scan(void) {
 
         deselect_cols();
 
+        #ifndef NO_BACKLIGHT
         // Update the backlight every 5 columns
         if (!(col % 5)) {
             backlight_send_group(col / 5);
         }
+        #endif
     }
 
     matrix_print();

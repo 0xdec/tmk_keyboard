@@ -55,12 +55,7 @@ LIB_DIR = ../lib
 # project specific files
 SRC =  keymap_common.c \
   matrix.c \
-  led.c \
-  backlight.c \
-  lighting.cpp \
-  ../lib/TLC5947/TLC5947.cpp \
-  ../lib/TLC5947/new.cpp \
-  ../lib/TLC5947/abi.cpp
+	led.c
 
 ifdef KEYMAP
   SRC := keymap_$(KEYMAP).c $(SRC)
@@ -131,6 +126,14 @@ COMMAND_ENABLE = yes    # Commands for debug and configuration
 #SLEEP_LED_ENABLE = yes  # Breathing sleep LED during USB suspend
 NKRO_ENABLE = yes  # USB Nkey Rollover - not yet supported in LUFA
 BACKLIGHT_ENABLE = yes  # Enable keyboard backlight functionality
+
+ifdef BACKLIGHT_ENABLE
+    SRC += backlight.c \
+	  lighting.cpp \
+	  ../lib/TLC5947/TLC5947.cpp \
+	  ../lib/TLC5947/new.cpp \
+	  ../lib/TLC5947/abi.cpp
+endif
 
 
 # Optimize size but this may cause error "relocation truncated to fit"
