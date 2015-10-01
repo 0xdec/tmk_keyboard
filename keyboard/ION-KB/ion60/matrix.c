@@ -31,6 +31,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 
+#define SIN 6
+#define CLK 7
+#define LAT 6
+
 #ifdef SOFT_DEBOUNCE
 #   define DEBOUNCE	5
 #else
@@ -45,7 +49,7 @@ static matrix_row_t matrix_debouncing[MATRIX_ROWS];
 static void init_rows(void);
 static uint8_t read_rows(void);
 static void init_cols(void);
-static void deselect_cols(void);
+static void deselect_cols(uint8_t col);
 static void select_col(uint8_t col);
 
 
@@ -93,13 +97,21 @@ void matrix_init(void) {
 }
 
 uint8_t matrix_scan(void) {
+    // Set SIN to output high (DDR:1, PORT:1)
+    PORTC |= _BV(SIN);
+
     for (uint8_t col = 0; col < MATRIX_COLS; col++) {
         select_col(col);
+
+        // Set SIN to output low (DDR:1, PORT:0)
+        PORTC &= ~(_BV(SIN));
+
         #ifdef SOFT_DEBOUNCE
         _delay_us(3);
         #else
         _delay_ms(5);
         #endif
+
         uint8_t rows = read_rows();
 
         for (uint8_t row = 0; row < MATRIX_ROWS; row++) {
@@ -125,8 +137,6 @@ uint8_t matrix_scan(void) {
             #endif
         }
 
-        deselect_cols();
-
         #ifndef NO_BACKLIGHT
         // Update the backlight every 5 columns
         if (!(col % 5)) {
@@ -134,6 +144,8 @@ uint8_t matrix_scan(void) {
         }
         #endif
     }
+
+    deselect_cols(MATRIX_COLS);
 
     matrix_print();
 
@@ -184,61 +196,72 @@ uint8_t matrix_key_count(void) {
 }
 
 /* Row pin configuration
- * Row: 0    1    2    3    4
- * Pin: PF0  PF4  PF5  PF6  PF7
+ * Row: 0   1   2   3   4       5 (optional)
+ * Pin: PF0 PF1 PF4 PF5 PF6     PF7
  */
 static void init_rows(void) {
     // Set pins to input (DDR:0, PORT:0)
-    DDRF  &= ~0b11110001;
-    PORTF &= ~0b11110001;
+    DDRF  &= ~0b01110011;
+    PORTF &= ~0b01110011;
+
+    if (MATRIX_ROWS == 6) {
+        DDRF  &= ~0b10000000;
+        PORTF &= ~0b10000000;
+    }
 }
 
 static uint8_t read_rows(void) {
-    uint8_t rows = (PINF>>3 & 0b00011110) | (PINF & 1);
+    uint8_t rows = (PINF>>2 & 0b00011100) | (PINF & 0b00000011);
+    if (MATRIX_ROWS == 6) {
+        rows |= (PINF>>7 & 1);
+    }
     return rows;
 }
 
 /* Column pin configuration
- * The columns uses two 74HC238 3 to 8 bit demultiplexers, connected together
- * to form one 4 to 8 bit demultiplexer.
+ * The columns use two 74HC595 8 bit serial->parallel shift registers, connected
+ * together to form one 16 bit serial->parallel shift register.
  *
- * The four address lines are named A0, A1, A2, and A3:
- * Name: A0   A1   A2   A3
- * Pin:  PB4  PB5  PB6  PB7
+ * The control lines are SIN, CLK, and LAT:
+ * Name:  SIN CLK LAT
+ * Pin:   PC6 PC7 PE6
  *
- * There is also an enable pin that must be set correctly:
- * Name: !E1
- * Pin:  PD7
- *
- * To enable both demultiplexers, E1 must be set to 0 (low)
- *
- * Column: 0   1   2   3   4   5   6   7   8   9   10  11  12  13  14
- * A0:     0   1   0   1   0   1   0   1   0   1   0   1   0   1   0
- * A1:     0   0   1   1   0   0   1   1   0   0   1   1   0   0   1
- * A2:     0   0   0   0   1   1   1   1   0   0   0   0   1   1   1
- * A3:     0   0   0   0   0   0   0   0   1   1   1   1   1   1   1
+ * To enable both shift registers, !OE must be tied to ground
  */
 static void init_cols(void) {
-    // Set pins to output low (DDR:1, PORT:0)
-    DDRB |= 0b11110000;
-    PORTB &= ~0b11110000;
+    // Set control pins to output low (DDR:1, PORT:0)
+    DDRC |= 0b11000000;
+    PORTC &= ~0b11000000;
+    DDRE |= 0b01000000;
+    PORTE &= ~0b01000000;
 
-    DDRD |= _BV(7);
-    PORTD &= ~(_BV(7));
+    deselect_cols(0);
 }
 
-static void deselect_cols(void) {
-    // Set pins to output low (DDR:1, PORT:0)
-    PORTB &= ~0b11110000;
+static void deselect_cols(uint8_t col) {
+    // Set LAT to output low (DDR:1, PORT:0)
+    PORTE &= ~(_BV(LAT));
+    // Set SIN to output low (DDR:1, PORT:0)
+    PORTC &= ~(_BV(SIN));
 
-    // Set E1 to output high (DDR:1, PORT:1)
-    PORTD |= _BV(7);
+    for (uint8_t i = 0; i < (16 - col); i++) {
+        // Toggle CLK on and off
+        PORTC |= _BV(CLK);
+        PORTC &= ~(_BV(CLK));
+    }
+
+    // Set LAT to output high (DDR:1, PORT:1)
+    PORTE |= _BV(LAT);
 }
 
 static void select_col(uint8_t col) {
-    // Output high (DDR:1, PORT:1) to select
-    PORTB |= (col<<4);
+    // Set LAT to output low (DDR:1, PORT:0)
+    PORTE &= ~(_BV(LAT));
 
-    // Set E1 to output low (DDR:1, PORT:0)
-    PORTD &= ~(_BV(7));
+    // Toggle CLK on and off
+    PORTC |= _BV(CLK);
+    PORTC &= ~(_BV(CLK));
+
+    // Set LAT to output high (DDR:1, PORT:1)
+    PORTE |= _BV(LAT);
 }
