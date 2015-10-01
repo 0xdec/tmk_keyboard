@@ -25,15 +25,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "matrix.h"
 #include "keymap_common.h"
 #include "keycode.h"
+#include "TLC5947/pindefs.h"
 
 #ifndef NO_BACKLIGHT
 #include "lighting.h"
 #endif
 
 
-#define SIN 6
-#define CLK 7
-#define LAT 6
+const pin_t SIN = PC6;
+const pin_t CLK = PC7;
+const pin_t LAT = PE6;
 
 #ifdef SOFT_DEBOUNCE
 #   define DEBOUNCE	5
@@ -100,13 +101,13 @@ void matrix_init(void) {
 
 uint8_t matrix_scan(void) {
     // Set SIN to output high (DDR:1, PORT:1)
-    PORTC |= _BV(SIN);
+    *SIN.port |= _BV(SIN.pin);
 
     for (uint8_t col = 0; col < MATRIX_COLS; col++) {
         select_col(col);
 
         // Set SIN to output low (DDR:1, PORT:0)
-        PORTC &= ~(_BV(SIN));
+        *SIN.port &= ~(_BV(SIN.pin));
 
         #ifdef SOFT_DEBOUNCE
         _delay_us(3);
@@ -232,38 +233,41 @@ static uint8_t read_rows(void) {
  */
 static void init_cols(void) {
     // Set control pins to output low (DDR:1, PORT:0)
-    DDRC |= 0b11000000;
-    PORTC &= ~0b11000000;
-    DDRE |= 0b01000000;
-    PORTE &= ~0b01000000;
+    *SIN.ddr |= _BV(SIN.pin);
+    *CLK.ddr |= _BV(CLK.pin);
+    *LAT.ddr |= _BV(LAT.pin);
+
+    *SIN.port &= ~(_BV(SIN.pin));
+    *CLK.port &= ~(_BV(CLK.pin));
+    *LAT.port &= ~(_BV(LAT.pin));
 
     deselect_cols(0);
 }
 
 static void deselect_cols(uint8_t col) {
     // Set LAT to output low (DDR:1, PORT:0)
-    PORTE &= ~(_BV(LAT));
+    *LAT.port &= ~(_BV(LAT.pin));
     // Set SIN to output low (DDR:1, PORT:0)
-    PORTC &= ~(_BV(SIN));
+    *SIN.port &= ~(_BV(SIN.pin));
 
     for (uint8_t i = 0; i < (16 - col); i++) {
         // Toggle CLK on and off
-        PORTC |= _BV(CLK);
-        PORTC &= ~(_BV(CLK));
+        *CLK.port |= _BV(CLK.pin);
+        *CLK.port &= ~(_BV(CLK.pin));
     }
 
     // Set LAT to output high (DDR:1, PORT:1)
-    PORTE |= _BV(LAT);
+    *LAT.port |= _BV(LAT.pin);
 }
 
 static void select_col(uint8_t col) {
     // Set LAT to output low (DDR:1, PORT:0)
-    PORTE &= ~(_BV(LAT));
+    *LAT.port &= ~(_BV(LAT.pin));
 
     // Toggle CLK on and off
-    PORTC |= _BV(CLK);
-    PORTC &= ~(_BV(CLK));
+    *CLK.port |= _BV(CLK.pin);
+    *CLK.port &= ~(_BV(CLK.pin));
 
     // Set LAT to output high (DDR:1, PORT:1)
-    PORTE |= _BV(LAT);
+    *LAT.port |= _BV(LAT.pin);
 }
