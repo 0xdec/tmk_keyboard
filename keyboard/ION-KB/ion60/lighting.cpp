@@ -51,7 +51,7 @@ static const uint8_t group_map[NUM_GROUPS][24] PROGMEM = {
     {59,44,29,14,58,43,28,13,57,42,27,12,56,41,26,11,55,40,25,10,54,39,24,9}
 };
 // Array for the group anode pins
-static const pin group_pins[NUM_GROUPS] = {
+static const pin_t group_pins[NUM_GROUPS] = {
     PB5,
     PB6,
     PB7
