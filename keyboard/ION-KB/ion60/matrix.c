@@ -81,6 +81,7 @@ void matrix_init(void) {
         matrix[i] = 0;
         matrix_debouncing[i] = 0;
 
+        #ifndef NO_BACKLIGHT
         // Find the caps and sym lock keys
         // TODO: update when the default layer is changed, and add scroll lock
         for (uint8_t ii = 0; ii < MATRIX_COLS; ii++) {
@@ -93,6 +94,7 @@ void matrix_init(void) {
                 sym_key.key.col = ii;
             }
         }
+        #endif
     }
 }
 
