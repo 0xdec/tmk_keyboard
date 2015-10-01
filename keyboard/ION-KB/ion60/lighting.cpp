@@ -55,7 +55,7 @@ static const pin group_pins[NUM_GROUPS] = {
     PB5,
     PB6,
     PB7
-}
+};
 // Array to store the LED values
 static led_t led_values[MATRIX_ROWS][MATRIX_COLS];
 
