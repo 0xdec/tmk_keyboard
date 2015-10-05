@@ -138,9 +138,10 @@ uint8_t matrix_scan(void) {
         }
 
         #ifndef NO_BACKLIGHT
-        // Update the backlight every 5 columns
-        if (!(col % 5)) {
-            backlight_send_group(col / 5);
+        // Update the backlight every 4 columns
+        // TODO: make this even (figure out time for each cycle)
+        if (!(col % 4)) {
+            backlight_send_group(col / 4);
         }
         #endif
     }
