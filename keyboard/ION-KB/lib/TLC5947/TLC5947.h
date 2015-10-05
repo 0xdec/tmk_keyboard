@@ -22,17 +22,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "pindefs.h"
 #include "new.h"
 
-struct pin {
-  uint8_t pin;
-  volatile uint8_t *port;
-  volatile uint8_t *ddr;
-};
-
 // Declare TLC5947 class and its member functions
 class TLC5947 {
   public:
     TLC5947();
-    TLC5947(pin latch, pin blank);
+    TLC5947(pin_t latch, pin_t blank);
     ~TLC5947();
 
     uint8_t chipID(void);
@@ -67,10 +61,10 @@ class TLC5947 {
     static void disable(uint8_t chip);
     static void latch(uint8_t chip);
 
-    static const pin s_SCK;
-    static const pin s_MOSI;
-    static pin *s_latch;
-    static pin *s_blank;
+    static const pin_t s_SCK;
+    static const pin_t s_MOSI;
+    static pin_t *s_latch;
+    static pin_t *s_blank;
 
     static uint8_t s_numChips;
     static uint16_t **s_values;
