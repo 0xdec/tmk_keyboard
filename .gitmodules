@@ -1,0 +1,3 @@
+[submodule "keyboard/ION-KB/lib/TLC5947"]
+	path = keyboard/ION-KB/lib/TLC5947
+	url = https://github.com/D1SC0tech/TLC5947.git
