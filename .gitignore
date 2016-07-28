@@ -11,4 +11,5 @@ tags
 *~
 build/
 *.bak
+.DS_Store
 keyboard/ION-KB/tools
